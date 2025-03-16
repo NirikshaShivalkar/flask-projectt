@@ -20,12 +20,12 @@ def test_homepage(client):
     assert b"To-Do List" in response.data  # Check if "To-Do List" is in response
 
 def test_add_task(client):
-    response = client.post("/add", data={"task": "Buy groceries"}, follow_redirects=True)
+    response = client.post("/add", data={"content": "Buy groceries"}, follow_redirects=True)
     assert response.status_code == 200
     assert b"Buy groceries" in response.data
 
 def test_delete_task(client):
-    client.post("/add", data={"task": "Test Task"}, follow_redirects=True)
+    client.post("/add", data={"content": "Test Task"}, follow_redirects=True)
     response = client.get("/delete/1", follow_redirects=True)  # Assuming ID = 1
     assert response.status_code == 200
     assert b"Test Task" not in response.data

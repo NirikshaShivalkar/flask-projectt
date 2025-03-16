@@ -5,10 +5,11 @@ pipeline {
         VIRTUAL_ENV = "venv"
     }
 
-    stages {
-        stage('Clone Repository') {
+    
+     stages {
+        stage("Git Clone") {
             steps {
-                git 'https://github.com/yourusername/your-todo-app.git'
+                 git credentialsId: 'c7c078f8-e44a-4217-a0ba-0e48a22bfd02', git branch: 'main', url: 'https://github.com/NirikshaShivalkar/tomcat-maven.git'
             }
         }
 
