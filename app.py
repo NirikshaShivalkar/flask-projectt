@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
+# Initialize tasks as an empty list
 tasks = []
 
 @app.route("/")
@@ -11,7 +12,7 @@ def index():
 @app.route("/add", methods=["POST"])
 def add_task():
     task_content = request.form.get("content")
-    if not task_content.strip():  # Ensure it's not empty or whitespace
+    if not task_content or not task_content.strip():
         return "Task is required", 400
     tasks.append({"content": task_content, "completed": False})
     return redirect(url_for("index"))
@@ -28,5 +29,6 @@ def delete_task(task_id):
         tasks.pop(task_id)
     return redirect(url_for("index"))
 
+# Ensure app does not run when imported
 if __name__ == "__main__":
     app.run(debug=True)

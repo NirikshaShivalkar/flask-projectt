@@ -9,12 +9,12 @@
 </head>
 
 <body>
-    <container>
+    <div class="container">
         <h1>To-Do List</h1>
 
         <!-- Task Input Form -->
         <form action="{{ url_for('add_task') }}" method="post">
-            <input type="text" name="content" placeholder="New Task">
+            <input type="text" name="content" placeholder="New Task" required>
             <button type="submit">Add</button>
         </form>
 
@@ -23,12 +23,12 @@
             {% for task in tasks %}
             <li class="{% if task.completed %}completed{% endif %}">
                 {{ task.content }}
-                <a href="{{ url_for('complete_task', task_id=loop.index0) }}">✔</a>
-                <a href="{{ url_for('delete_task', task_id=loop.index0) }}">❌</a>
+                <a href="{{ url_for('complete_task', task_id=loop.index0) }}" title="Mark as complete">✔</a>
+                <a href="{{ url_for('delete_task', task_id=loop.index0) }}" title="Delete task">❌</a>
             </li>
             {% endfor %}
         </ul>
-    </container>
+    </div>
 </body>
 
 </html>
