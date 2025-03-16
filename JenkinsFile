@@ -19,32 +19,19 @@ pipeline {
         stage('Set Up Python Environment') {
             steps {
                 sh '''
-<<<<<<< HEAD
-                    set -e
                     python3 -m venv venv
-                    chmod +x venv/bin/activate
-                    source venv/bin/activate
-                    venv/bin/python -m pip install --upgrade pip
-                    venv/bin/python -m pip install -r requirements.txt
-=======
-                    python3 -m venv venv
-                    source venv/bin/activate && pip install -r requirements.txt
->>>>>>> 99c9cbe (Fixed pytest import error and updated test cases)
+                    source venv/bin/activate && pip install --upgrade pip
+                    pip install -r requirements.txt
                 '''
             }
         }
 
         stage('Run Tests') {
             steps {
-<<<<<<< HEAD
                 sh '''
-                    set -e
                     source venv/bin/activate
-                    venv/bin/python -m pytest --junitxml=report.xml || echo "❌ Tests Failed!"
+                    pytest --junitxml=report.xml || echo "❌ Tests Failed!"
                 '''
-=======
-                sh 'source venv/bin/activate && pytest --junitxml=report.xml'
->>>>>>> 99c9cbe (Fixed pytest import error and updated test cases)
             }
         }
 
@@ -54,16 +41,10 @@ pipeline {
             }
             steps {
                 sh '''
-<<<<<<< HEAD
-                    set -e
                     echo "🚀 Deploying the app..."
                     source venv/bin/activate
-                    nohup venv/bin/gunicorn -w 4 -b 0.0.0.0:5000 app:app > gunicorn.log 2>&1 &
+                    nohup gunicorn -w 4 -b 0.0.0.0:5000 app:app > gunicorn.log 2>&1 &
                     echo "✅ Application deployed successfully!"
-=======
-                    echo "Deploying the app..."
-                    source venv/bin/activate && nohup gunicorn -w 4 -b 0.0.0.0:5000 app:app > gunicorn.log 2>&1 &
->>>>>>> 99c9cbe (Fixed pytest import error and updated test cases)
                 '''
             }
         }
