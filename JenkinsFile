@@ -13,7 +13,7 @@ pipeline {
                     branch: 'main',
                     url: 'https://github.com/NirikshaShivalkar/flask-projectt.git'
                 )
-                bat '"dir /s"'  // List files for debugging
+                bat "dir /s"  // Debugging: List all files after cloning
             }
         }
 
@@ -27,7 +27,7 @@ pipeline {
                     python -m venv venv
 
                     echo "🔹 Activating virtual environment..."
-                    call venv\\\\Scripts\\\\activate
+                    call venv\\Scripts\\activate
 
                     echo "🔹 Checking if requirements.txt exists..."
                     if not exist requirements.txt (
@@ -37,20 +37,28 @@ pipeline {
 
                     echo "🔹 Upgrading pip and installing dependencies..."
                     python -m pip install --upgrade pip
-                    python -m pip install -r requirements.txt || exit /b 1
+                    python -m pip install -r requirements.txt
+
+                    if errorlevel 1 (
+                        echo "❌ ERROR: Dependency installation failed!"
+                        exit /b 1
+                    )
                 '''
             }
         }
 
         stage('Run Tests') {
             steps {
-               bat '''
+                bat '''
                     echo "🔹 Running Tests..."
-                    call venv\\\\Scripts\\\\activate
-                    pytest --junitxml=report.xml || (
+                    call venv\\Scripts\\activate
+                    pytest --junitxml=report.xml
+
+                    if errorlevel 1 (
                         echo "❌ Tests Failed!"
                         exit /b 1
-                    )'''
+                    )
+                '''
             }
         }
 
@@ -59,13 +67,26 @@ pipeline {
                 expression { return currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-               bat '''echo "🚀 Deploying the app..."
-                    call venv\\\\Scripts\\\\activate
+                bat '''
+                    echo "🚀 Deploying the app..."
+                    call venv\\Scripts\\activate
+
+                    echo "🔹 Checking if app.py exists..."
+                    if not exist app.py (
+                        echo "❌ ERROR: app.py not found!"
+                        exit /b 1
+                    )
 
                     echo "🔹 Starting Flask application..."
-                    python app.py || exit /b 1
+                    python app.py
 
-                    echo "✅ Application deployed successfully!"'''
+                    if errorlevel 1 (
+                        echo "❌ ERROR: Failed to start Flask application!"
+                        exit /b 1
+                    )
+
+                    echo "✅ Application deployed successfully!"
+                '''
             }
         }
     }
