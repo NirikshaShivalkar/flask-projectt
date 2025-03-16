@@ -9,7 +9,7 @@ pipeline {
      stages {
         stage("Git Clone") {
             steps {
-                 git credentialsId: 'c7c078f8-e44a-4217-a0ba-0e48a22bfd02', git branch: 'main', url: 'https://github.com/NirikshaShivalkar/tomcat-maven.git'
+                 git credentialsId: 'c7c078f8-e44a-4217-a0ba-0e48a22bfd02', git branch: 'main', url: 'https://github.com/NirikshaShivalkar/flask-project1.git'
             }
         }
 
