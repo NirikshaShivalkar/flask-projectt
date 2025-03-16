@@ -5,25 +5,27 @@ pipeline {
         VIRTUAL_ENV = "venv"
     }
 
-    
-     stages {
+    stages {
         stage("Git Clone") {
             steps {
-                 git credentialsId: 'c7c078f8-e44a-4217-a0ba-0e48a22bfd02', git branch: 'main', url: 'https://github.com/NirikshaShivalkar/flask-project1.git'
+                git(
+                    credentialsId: 'c7c078f8-e44a-4217-a0ba-0e48a22bfd02',
+                    branch: 'main',
+                    url: 'https://github.com/NirikshaShivalkar/flask-project1.git'
+                )
             }
         }
 
         stage('Set Up Python Environment') {
             steps {
                 sh 'python3 -m venv venv'
-                sh 'source venv/bin/activate'
-                sh 'pip install -r requirements.txt'
+                sh 'source venv/bin/activate && pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'pytest --junitxml=report.xml'
+                sh 'source venv/bin/activate && pytest --junitxml=report.xml'
             }
         }
 
@@ -35,7 +37,7 @@ pipeline {
             }
             steps {
                 sh 'echo "Deploying the app..."'
-                sh 'gunicorn -w 4 -b 0.0.0.0:5000 app:app &'
+                sh 'source venv/bin/activate && gunicorn -w 4 -b 0.0.0.0:5000 app:app &'
             }
         }
     }
